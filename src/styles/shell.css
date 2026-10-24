@@ -1,0 +1,285 @@
+/* 外壳布局：六条横带从上到下堆叠，中间一条（.sheet）吃掉剩余高度。
+   全部尺寸走 tokens.css 里的变量，颜色只写 var(...)，所以切主题不需要改这里任何一行。 */
+
+.shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  animation: shell-in 0.24s var(--ease-spring);
+}
+
+@keyframes shell-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------- 顶栏 ---------- */
+
+.topbar {
+  flex: none;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* 一枚绿底白格子的标志：用渐变做一点点体积感，是全局唯一的例外 */
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  background: linear-gradient(160deg, var(--accent), var(--accent-strong));
+}
+
+.brand-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* 主题三态开关（分段控件） */
+.seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+}
+
+.seg-btn {
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--ink-3);
+  border-radius: var(--r-full);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.seg-btn:hover {
+  color: var(--ink);
+}
+
+.seg-btn[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--hairline), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- 占位横带 ---------- */
+
+.band {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  font-size: 12px;
+  color: var(--ink-3);
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.band-ribbon { height: var(--toolbar-h); }
+.band-formula { height: var(--formulabar-h); background: var(--surface-2); }
+.band-tabs { height: var(--tabs-h); }
+.band-status {
+  height: var(--statusbar-h);
+  background: var(--surface-2);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 0;
+}
+
+/* 虚线框 = “这里是空的，将来放东西”。
+   inset 让虚线退到横带内侧，不贴着上下两根分割线。 */
+.ph-frame {
+  position: absolute;
+  inset: 5px 10px;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--r-sm);
+  pointer-events: none;
+}
+
+.ph-note {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* 代码/路径一律等宽字体 + 浅底，和正文一眼分得开 */
+.ph-note code,
+.steps code,
+.hint code {
+  padding: 1px 5px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  background: var(--surface-3);
+  border-radius: 4px;
+}
+
+/* 公式栏里的名称框（A1）和 fx 标记 */
+.fx-name {
+  flex: none;
+  min-width: 64px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-sm);
+}
+
+.fx-mark {
+  flex: none;
+  font: italic 600 13px/1 Georgia, "Times New Roman", serif;
+  color: var(--ink-3);
+}
+
+/* 工作表标签：静止的 Sheet1，不是按钮 */
+.tab-pill {
+  flex: none;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.status-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--hairline-strong);
+}
+
+/* ---------- 表格区 ---------- */
+
+/* 空白网格是用 CSS 背景画出来的，DOM 里一个单元格都没有。
+   两条 repeating-linear-gradient 分别画竖线和横线，间距 96×24（列宽/行高）。
+   background-position 把网格推到列头(64px)和行头(24px)之后，和真表格的观感对齐。 */
+.sheet {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background-color: var(--surface);
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 24px);
+  background-position: 64px 24px, 64px 24px;
+}
+
+/* 列头 / 行头两块浅色底纹。绝对定位铺在最下层（z-index: 0），
+   所以网格线在它上面，卡片在它更上面。 */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--surface-2), var(--surface-2)) 0 0 / 100% 24px no-repeat,
+    linear-gradient(var(--surface-2), var(--surface-2)) 0 0 / 64px 100% no-repeat;
+}
+
+/* 路标卡片：讲清楚“这是个空壳、下一步先写哪”。不是功能，是给读代码的人看的。 */
+.sheet-card {
+  position: relative;
+  z-index: 1;
+  width: min(540px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 22px 24px 20px;
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 3px 9px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent-strong);
+  background: var(--accent-wash);
+  border-radius: var(--r-full);
+}
+
+.sheet-card h1 {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.sheet-card p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.steps {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  font-size: 12.5px;
+  line-height: 2;
+  color: var(--ink-2);
+}
+
+.hint {
+  margin-top: 16px;
+  padding-top: 12px;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--ink-3);
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---------- 小屏 ---------- */
+
+@media (max-width: 640px) {
+  .ph-note { display: none; }      /* 窄屏只留标签和占位，不塞说明文字 */
+  .brand-sub { display: none; }
+  .sheet { padding: 16px; }
+  .sheet-card { padding: 18px; }
+  .sheet-card h1 { font-size: 17px; }
+}

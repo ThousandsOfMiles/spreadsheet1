@@ -1,0 +1,89 @@
+/* 重置与全局默认。基本照抄原项目 src/styles/base.css 的前半段，
+   只删掉了和功能相关的规则（拖放高亮、启动画面等）。 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+/* 应用里的按钮都是“无样式按钮 + 自己画皮”，所以统一在这里清掉浏览器默认样式 */
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+svg {
+  display: block;
+}
+
+/* 组件自己设了 display，会盖过浏览器对 hidden 的处理，所以补一条 */
+[hidden] {
+  display: none !important;
+}
+
+/* 键盘焦点可见；鼠标点击不出环 */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+/* ---------- 应用外壳：一整屏，纵向排布 ---------- */
+
+.app {
+  height: 100vh;  /* 老浏览器的兜底 */
+  height: 100dvh; /* 现代浏览器：跟着地址栏收起/展开 */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* viewport-fit=cover：横屏刘海机上，两条边的栏不钻进刘海里 */
+  padding-left: var(--safe-l);
+  padding-right: var(--safe-r);
+}
+
+/* 有人把系统里的“减少动效”打开时，一切动画都近乎瞬时 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

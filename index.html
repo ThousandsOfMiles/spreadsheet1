@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Spreadsheet 骨架</title>
+  <meta name="description" content="Spreadsheet 项目的初始骨架：只有可运行的外壳，没有任何表格功能。" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <!-- 浏览器地址栏/状态栏的颜色，跟着主题走（theme.js 会同步改写） -->
+  <meta name="theme-color" content="#356d49" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#28593a" media="(prefers-color-scheme: dark)" />
+
+  <script>
+    // 首帧之前先套用已保存的主题，避免“先白后黑”的闪动。
+    // 完整的三态（系统/亮/暗）逻辑在 src/ui/theme.js，这里只做最小引导。
+    try {
+      const t = localStorage.getItem('spreadsheet1:theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch {}
+  </script>
+
+  <style>
+    /* 启动画面。写在 <head> 里，所以样式表还没加载时也能立刻看到东西，
+       而不是白屏等 JS。main.js 一挂载就会把它整块替换掉。 */
+    html { height: 100%; }
+    body { margin: 0; height: 100%; }
+    html { background: #f9f9f7; }
+    @media (prefers-color-scheme: dark) {
+      html:not([data-theme="light"]) { background: #0d0d0d; }
+    }
+    html[data-theme="dark"] { background: #0d0d0d; }
+
+    #app { height: 100%; display: flex; flex-direction: column; }
+
+    .boot-splash {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: inherit;
+      z-index: 100;
+      opacity: 0;
+      animation: boot-appear 0.25s ease 0.15s forwards;
+    }
+    @keyframes boot-appear { to { opacity: 1; } }
+    .boot-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(160deg, #356d49, #28593a);
+      box-shadow: 0 8px 24px rgba(53, 109, 73, 0.28);
+      animation: boot-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes boot-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.94); opacity: 0.75; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .boot-splash, .boot-mark { animation: none; opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- 挂载点：src/main.js 会把这里的内容换成整个外壳 -->
+    <div class="boot-splash" aria-hidden="true"><span class="boot-mark"></span></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

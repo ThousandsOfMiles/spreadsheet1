@@ -1,0 +1,11 @@
+/* 样式入口：顺序有意义。
+   1. tokens  设计变量（颜色、圆角、字体、各条栏的高度）——所有样式都只引用这里的变量
+   2. base    重置与全局默认（盒模型、字体、按钮、焦点环、减少动效）
+   3. shell   这一层外壳自己的布局
+
+   原项目的 src/styles/index.css 引了 28 个文件（grid.css 40KB、components.css 63KB、
+   chrome.css 49KB……）。骨架只留这 3 个，但拆分方式和命名保持一致，
+   以后要加一个功能区，就是新建 ribbon.css 再在这里 @import 一行。 */
+@import './tokens.css';
+@import './base.css';
+@import './shell.css';

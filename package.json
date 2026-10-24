@@ -1,0 +1,15 @@
+{
+  "name": "spreadsheet1",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Spreadsheet 项目的初始骨架：只有可运行的外壳，没有任何表格功能",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.2.0"
+  }
+}
